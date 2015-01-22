@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-#ouifile = '/usr/local/pf/conf/allowed_device_oui.txt'
+ouifile = '/usr/local/pf/conf/allowed_device_oui.txt'
 
-ouifile = '/PATH/TO/TEST/FILE.txt'
+#ouifile = '/PATH/TO/TEST/FILE.txt'
 
 if File.file?(ouifile)
 
