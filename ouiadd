@@ -1,43 +1,49 @@
 #!/usr/bin/env ruby
 
-ouifile = '/usr/local/pf/conf/allowed_device_oui.txt'
+# Set the OUI file path
+oui_file = '/usr/local/pf/conf/allowed_device_oui.txt'
+#oui_file = "#{File.expand_path File.dirname(__FILE__)}/oui.txt"
 
-#ouifile = '/PATH/TO/TEST/FILE.txt'
-
-if File.file?(ouifile)
-
+# Does the file exist
+if File.file?(oui_file)
+  # Did we get enough arguments
   if ARGV.length >= 2
-
-    newline = "#{ARGV[0]}  # #{ARGV[1]}".to_s.tr('"', '').tr("'", '')
-
-    found_match = false
-
+    # form the mac address string
+    mac_addr = ARGV[0].to_s.tr('"', '').tr("'", '').upcase
+    # form the device label string
+    device_label = ARGV[1].to_s.tr('"', '').tr("'", '')
+    # form the newline string
+    new_line = "#{mac_addr}  # #{device_label}"
+    # set the counter
     count = 1
-
-    matching_line_num = nil
-
-    File.readlines(ouifile).each do |line|
-      if line.to_s.tr(' ', '').match(newline.tr(' ', ''))
-        found_match = true
-        matching_line_num = count
+    # iterate over oui file line by line
+    File.readlines(oui_file).each do |line|
+      # get the line's mac address
+      line_mac = line.split('#')[0].to_s.strip
+      # does this mac match the one we took in as an argument
+      if line_mac.match(mac_addr)
+        # exit the program with an error
+        puts "Dup_Error: '#{mac_addr}' is already added on line '#{count}'!"
+        exit 1
       end
+      # increment the line counter
       count = count + 1
     end
-
-    if found_match
-      puts "Dup_Error: '#{newline}' is allowed on line '#{matching_line_num}'!"
-    else
-      open(ouifile, 'a') do |f|
-        f << newline + "\n"
-      end
-      puts "Success: '#{newline}' added to the end of '#{ouifile}'!"
+    # Open the oui file with append
+    open(oui_file, 'a') do |f|
+      # write the new line to the file
+      f << new_line + "\n"
     end
-
+    # Done
+    puts "Success: '#{new_line}' added to the end of '#{oui_file}'!"
   else
+    # You need more arguments fool!
     puts "Arg_Error: Incorrect number of arguments supplied!"
     puts 'Usage: ouiadd 00:00:00 Xbox'
+    exit 2
   end
-
 else
-  puts "File_Error: #{ouifile.to_s} does not exist!"
+  # What the heck are you talking about?
+  puts "File_Error: #{oui_file.to_s} does not exist!"
+  exit 3
 end
