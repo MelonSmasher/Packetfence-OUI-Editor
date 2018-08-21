@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
 # Set the OUI file path
-#oui_file = '/usr/local/pf/conf/allowed_device_oui.txt'
-oui_file = "#{File.expand_path File.dirname(__FILE__)}/oui.txt"
+oui_file = '/usr/local/pf/conf/allowed_device_oui.txt'
+#oui_file = "#{File.expand_path File.dirname(__FILE__)}/oui.txt"
 
 # Does the file exist
 if File.file?(oui_file)
